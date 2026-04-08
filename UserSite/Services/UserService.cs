@@ -15,7 +15,7 @@ public class UserService : IUserService
 
 	public async Task CreateAsync(UserDto dto)
 	{
-		User user = new() { Name = dto.Name, Email = dto.Email, IsActive = true };
+		User user = new() { Name = dto.Name, Email = dto.Email, IsActive = false };
 
 		await _repository.CreateAsync(user);
 	}
