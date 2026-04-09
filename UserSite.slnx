@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Dockerfile.txt" />
+  </Folder>
   <Project Path="UserSite.Tests/UserSite.Tests.csproj" />
   <Project Path="UserSite/UserSite.csproj" />
 </Solution>
