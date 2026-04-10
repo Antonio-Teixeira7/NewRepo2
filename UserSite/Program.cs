@@ -18,6 +18,12 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+	var dbContext = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+	dbContext.Database.Migrate();
+}
+
 app.MapOpenApi();
 app.UseSwagger();
 app.UseSwaggerUI();
