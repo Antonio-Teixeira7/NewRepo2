@@ -26,11 +26,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// aplica migrations automaticamente no startup
-using (var scope = app.Services.CreateScope())
-{
-	var db = scope.ServiceProvider.GetRequiredService<UserDbContext>();
-	db.Database.Migrate();
-}
-
 app.Run();
