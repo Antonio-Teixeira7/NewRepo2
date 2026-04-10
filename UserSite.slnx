@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/Solution Items/" />
+  <Project Path="UserSite.Front/UserSite.Front.csproj" />
   <Project Path="UserSite.Tests/UserSite.Tests.csproj" />
   <Project Path="UserSite/UserSite.csproj" />
 </Solution>

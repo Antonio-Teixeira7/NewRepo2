@@ -24,7 +24,13 @@ public class UserService : IUserService
 	{
 		var users = await _repository.GetAllAsync();
 		return users
-			.Select(user => new UserDto { Name = user.Name, Email = user.Email })
+			.Select(user => new UserDto
+			{
+				Id = user.Id,
+				Name = user.Name,
+				Email = user.Email,
+				IsActive = user.IsActive
+			})
 			.ToList();
 	}
 
@@ -36,7 +42,13 @@ public class UserService : IUserService
 			throw new KeyNotFoundException($"User '{name}' was not found.");
 		}
 
-		UserDto dto = new() { Name = user.Name, Email = user.Email };
+		UserDto dto = new()
+		{
+			Id = user.Id,
+			Name = user.Name,
+			Email = user.Email,
+			IsActive = user.IsActive
+		};
 
 		return dto;
 	}

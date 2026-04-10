@@ -24,7 +24,7 @@ public class UserRepository : IUserRepository
 	{
 		return await _context.Users
 			.AsNoTracking()
-			.Where(u => u.IsActive)
+			.OrderBy(u => u.Id)
 			.ToListAsync();
 	}
 
