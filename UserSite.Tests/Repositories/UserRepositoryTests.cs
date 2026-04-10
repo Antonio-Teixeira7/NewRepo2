@@ -18,7 +18,7 @@ public class UserRepositoryTests
 	}
 
 	[Fact]
-	public async Task GetAllAsync_QuandoExistemAtivosEInativos_DeveRetornarApenasAtivos()
+	public async Task GetAllAsync_QuandoExistemAtivosEInativos_DeveRetornarTodos()
 	{
 		// Arrange
 		await using var context = CreateContext();
@@ -32,8 +32,9 @@ public class UserRepositoryTests
 		var users = await repository.GetAllAsync();
 
 		// Assert
-		Assert.Single(users);
+		Assert.Equal(2, users.Count);
 		Assert.Equal("Ativo", users[0].Name);
+		Assert.Equal("Inativo", users[1].Name);
 	}
 
 	[Fact]

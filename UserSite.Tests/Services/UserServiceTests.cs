@@ -59,8 +59,10 @@ public class UserServiceTests
 		var result = await _service.GetByNameAsync(name);
 
 		// Assert
+		Assert.Equal(1, result.Id);
 		Assert.Equal(name, result.Name);
 		Assert.Equal("maria@test.com", result.Email);
+		Assert.True(result.IsActive);
 	}
 
 	[Fact]

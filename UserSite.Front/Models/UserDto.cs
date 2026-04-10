@@ -1,4 +1,4 @@
-﻿namespace UserSite.Data.Dtos;
+namespace UserSite.Front.Models;
 
 public class UserDto
 {
