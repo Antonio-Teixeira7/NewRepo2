@@ -11,8 +11,8 @@ using UserSite.Data;
 namespace UserSite.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20260407152847_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260410135630_InitialPostgres")]
+    partial class InitialPostgres
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
