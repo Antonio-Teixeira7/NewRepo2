@@ -5,7 +5,6 @@ using UserSite.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
@@ -19,7 +18,6 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
-// Swagger sempre ligado
 app.MapOpenApi();
 app.UseSwagger();
 app.UseSwaggerUI();
@@ -27,5 +25,12 @@ app.UseSwaggerUI();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// aplica migrations automaticamente no startup
+using (var scope = app.Services.CreateScope())
+{
+	var db = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+	db.Database.Migrate();
+}
 
 app.Run();
