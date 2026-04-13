@@ -163,7 +163,7 @@
                 Password = loginPassword
             });
 
-            UserSessionService.SetSession(response.Token, loginEmail.Trim(), response.ExpiresAt);
+            UserSessionService.SetSession(response.AccessToken, response.UserId, response.Email, response.ExpiresAtUtc);
             Navigation.NavigateTo("/users");
             return;
         }
@@ -213,7 +213,7 @@
             registerPassword = string.Empty;
             confirmPassword = string.Empty;
             isLoginMode = true;
-            successMessage = "Conta criada com sucesso. O próximo passo será conectar esta tela ao AuthService para realizar o login real.";
+            successMessage = "Conta criada com sucesso. Agora faça login para acessar a lista de usuários.";
         }
         catch (Exception ex)
         {

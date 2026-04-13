@@ -4,6 +4,6 @@ public class AuthApiSettings
 {
 	public const string SectionName = "AuthApiSettings";
 
-	public string BaseUrl { get; set; } = string.Empty;
-	public string LoginPath { get; set; } = "api/auth/login";
+	public string BaseUrl { get; set; } = "https://usersite-auth-service.onrender.com/";
+	public string LoginPath { get; set; } = "/api/Auth/login";
 }

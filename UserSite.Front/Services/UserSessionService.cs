@@ -3,24 +3,27 @@ namespace UserSite.Front.Services;
 public class UserSessionService
 {
 	public string Token { get; private set; } = string.Empty;
+	public int UserId { get; private set; }
 	public string Email { get; private set; } = string.Empty;
-	public DateTime? ExpiresAt { get; private set; }
+	public DateTime? ExpiresAtUtc { get; private set; }
 
 	public bool IsAuthenticated =>
 		!string.IsNullOrWhiteSpace(Token) &&
-		(!ExpiresAt.HasValue || ExpiresAt.Value > DateTime.UtcNow);
+		(!ExpiresAtUtc.HasValue || ExpiresAtUtc.Value > DateTime.UtcNow);
 
-	public void SetSession(string token, string email, DateTime? expiresAt)
+	public void SetSession(string token, int userId, string email, DateTime? expiresAtUtc)
 	{
 		Token = token;
+		UserId = userId;
 		Email = email;
-		ExpiresAt = expiresAt;
+		ExpiresAtUtc = expiresAtUtc;
 	}
 
 	public void Clear()
 	{
 		Token = string.Empty;
+		UserId = 0;
 		Email = string.Empty;
-		ExpiresAt = null;
+		ExpiresAtUtc = null;
 	}
 }
