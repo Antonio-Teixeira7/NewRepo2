@@ -1,7 +1,6 @@
 using UserSite.Front.Components;
 using UserSite.Front.Configuration;
 using UserSite.Front.Services;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +21,6 @@ builder.Services.AddHttpClient<UserApiClient>(client =>
 });
 
 builder.Services.Configure<AuthApiSettings>(builder.Configuration.GetSection(AuthApiSettings.SectionName));
-builder.Services.AddScoped<ProtectedLocalStorage>();
 builder.Services.AddScoped<UserSessionService>();
 
 builder.Services.AddHttpClient<AuthApiClient>(client =>

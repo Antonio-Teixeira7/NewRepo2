@@ -122,19 +122,19 @@
     private string? errorMessage;
     private string? successMessage;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender)
         {
-            return;
+            return Task.CompletedTask;
         }
-
-        await UserSessionService.RestoreAsync();
 
         if (UserSessionService.IsAuthenticated)
         {
             Navigation.NavigateTo("/users");
         }
+
+        return Task.CompletedTask;
     }
 
     private void ShowLogin()
@@ -169,7 +169,7 @@
                 Password = loginPassword
             });
 
-            await UserSessionService.SetSessionAsync(response.AccessToken, response.UserId, response.Email, response.ExpiresAtUtc);
+            UserSessionService.SetSession(response.AccessToken, response.UserId, response.Email, response.ExpiresAtUtc);
             Navigation.NavigateTo("/users");
             return;
         }
