@@ -21,7 +21,7 @@ public class UserServiceTests
 	public async Task CreateAsync_DtoValido_DeveCriarUsuarioAtivo()
 	{
 		// Arrange
-		var dto = new UserDto { Name = "Antonio", Email = "antonio@test.com" };
+		var dto = new CreateUserDto { Name = "Antonio", Email = "antonio@test.com", Password = "123456" };
 		User? capturedUser = null;
 
 		_repositoryMock
@@ -37,6 +37,8 @@ public class UserServiceTests
 		Assert.NotNull(capturedUser);
 		Assert.Equal(dto.Name, capturedUser!.Name);
 		Assert.Equal(dto.Email, capturedUser.Email);
+		Assert.NotEqual(dto.Password, capturedUser.PasswordHash);
+		Assert.True(BCrypt.Net.BCrypt.Verify(dto.Password, capturedUser.PasswordHash));
 		Assert.True(capturedUser.IsActive);
 	}
 
@@ -93,5 +95,70 @@ public class UserServiceTests
 
 		// Assert
 		_repositoryMock.Verify(r => r.DeactivateAsync(userId), Times.Once);
+	}
+
+	[Fact]
+	public async Task UpdateAsync_SemNovaSenha_DeveManterHashAtual()
+	{
+		// Arrange
+		var currentHash = BCrypt.Net.BCrypt.HashPassword("senha-atual");
+		var user = new User
+		{
+			Id = 10,
+			Name = "Antonio",
+			Email = "old@test.com",
+			PasswordHash = currentHash,
+			IsActive = true
+		};
+		var dto = new UpdateUserDto
+		{
+			Name = "Antonio Novo",
+			Email = "new@test.com",
+			Password = null
+		};
+
+		_repositoryMock.Setup(r => r.GetByIdAsync(user.Id)).ReturnsAsync(user);
+		_repositoryMock.Setup(r => r.UpdateAsync(user)).Returns(Task.CompletedTask);
+
+		// Act
+		await _service.UpdateAsync(user.Id, dto);
+
+		// Assert
+		Assert.Equal(dto.Name, user.Name);
+		Assert.Equal(dto.Email, user.Email);
+		Assert.Equal(currentHash, user.PasswordHash);
+		_repositoryMock.Verify(r => r.UpdateAsync(user), Times.Once);
+	}
+
+	[Fact]
+	public async Task UpdateAsync_ComNovaSenha_DeveGerarNovoHash()
+	{
+		// Arrange
+		var currentHash = BCrypt.Net.BCrypt.HashPassword("senha-antiga");
+		var user = new User
+		{
+			Id = 11,
+			Name = "Maria",
+			Email = "maria@test.com",
+			PasswordHash = currentHash,
+			IsActive = true
+		};
+		var dto = new UpdateUserDto
+		{
+			Name = "Maria",
+			Email = "maria@test.com",
+			Password = "nova-senha"
+		};
+
+		_repositoryMock.Setup(r => r.GetByIdAsync(user.Id)).ReturnsAsync(user);
+		_repositoryMock.Setup(r => r.UpdateAsync(user)).Returns(Task.CompletedTask);
+
+		// Act
+		await _service.UpdateAsync(user.Id, dto);
+
+		// Assert
+		Assert.NotEqual(currentHash, user.PasswordHash);
+		Assert.True(BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash));
+		_repositoryMock.Verify(r => r.UpdateAsync(user), Times.Once);
 	}
 }

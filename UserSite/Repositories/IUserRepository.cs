@@ -1,5 +1,4 @@
-﻿using UserSite.Data.Dtos;
-using UserSite.Data.Entities;
+﻿using UserSite.Data.Entities;
 
 namespace UserSite.Repositories
 {
@@ -9,7 +8,8 @@ namespace UserSite.Repositories
 		Task CreateAsync(User user);
 		Task DeactivateAsync(int id);
 		Task<List<User>> GetAllAsync();
+		Task<User?> GetByIdAsync(int id);
 		Task<User?> GetByNameAsync(string name);
-		Task UpdateAsync(int id, UserDto dto);
+		Task UpdateAsync(User user);
 	}
 }

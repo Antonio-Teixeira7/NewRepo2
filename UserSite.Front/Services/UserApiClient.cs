@@ -16,13 +16,13 @@ public class UserApiClient(HttpClient httpClient)
 		return user ?? throw new InvalidOperationException("API returned an empty response.");
 	}
 
-	public async Task CreateAsync(UserDto user, CancellationToken cancellationToken = default)
+	public async Task CreateAsync(CreateUserRequest user, CancellationToken cancellationToken = default)
 	{
 		var response = await httpClient.PostAsJsonAsync("api/user", user, cancellationToken);
 		response.EnsureSuccessStatusCode();
 	}
 
-	public async Task UpdateAsync(int id, UserDto user, CancellationToken cancellationToken = default)
+	public async Task UpdateAsync(int id, UpdateUserRequest user, CancellationToken cancellationToken = default)
 	{
 		var response = await httpClient.PutAsJsonAsync($"api/user?id={id}", user, cancellationToken);
 		response.EnsureSuccessStatusCode();

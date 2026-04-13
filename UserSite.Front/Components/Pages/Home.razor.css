@@ -1,0 +1,206 @@
+.auth-shell {
+    min-height: calc(100vh - 8rem);
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(360px, 460px);
+    gap: 2rem;
+    align-items: center;
+}
+
+.auth-hero {
+    color: #f8fbff;
+    padding: 2rem 0;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.45rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(12px);
+    font-size: 0.9rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.auth-hero h1 {
+    margin-top: 1.25rem;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 1.05;
+    font-weight: 800;
+}
+
+.auth-hero p {
+    margin-top: 1rem;
+    max-width: 40rem;
+    font-size: 1.08rem;
+    line-height: 1.8;
+    color: rgba(248, 251, 255, 0.82);
+}
+
+.hero-highlights {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.hero-highlight-card {
+    padding: 1.1rem 1.2rem;
+    border-radius: 1.25rem;
+    background: rgba(12, 18, 37, 0.34);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(4, 10, 24, 0.22);
+}
+
+.hero-highlight-card span {
+    display: block;
+    margin-bottom: 0.45rem;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(248, 251, 255, 0.68);
+}
+
+.hero-highlight-card strong {
+    font-size: 1rem;
+    color: #fff;
+}
+
+.auth-card {
+    padding: 1.5rem;
+    border-radius: 2rem;
+    background: rgba(9, 15, 30, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 30px 80px rgba(7, 12, 27, 0.4);
+    backdrop-filter: blur(18px);
+}
+
+.auth-switcher {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding: 0.4rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.auth-switcher button {
+    border: 0;
+    border-radius: 0.85rem;
+    padding: 0.95rem 1rem;
+    background: transparent;
+    color: #c6d0e1;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.auth-switcher button.active {
+    background: linear-gradient(135deg, #6d7cff 0%, #8f63ff 100%);
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(109, 124, 255, 0.35);
+}
+
+.auth-panel {
+    display: grid;
+    gap: 1rem;
+}
+
+.panel-kicker {
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    color: #94a8ff;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.auth-panel h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+.auth-panel p {
+    margin: 0.5rem 0 0;
+    color: #b8c5dc;
+    line-height: 1.7;
+}
+
+.form-group {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.form-group label {
+    color: #dbe4f5;
+    font-weight: 600;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.auth-input {
+    min-height: 3.5rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.07);
+    color: #fff;
+}
+
+.auth-input::placeholder {
+    color: #9fb0cc;
+}
+
+.auth-submit {
+    margin-top: 0.5rem;
+    min-height: 3.6rem;
+    border: 0;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, #6d7cff 0%, #8f63ff 100%);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 18px 35px rgba(109, 124, 255, 0.28);
+}
+
+.auth-submit:hover {
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.auth-alert {
+    margin-bottom: 1rem;
+    padding: 0.95rem 1rem;
+    border-radius: 1rem;
+    font-weight: 600;
+}
+
+.auth-alert-error {
+    background: rgba(255, 93, 93, 0.14);
+    border: 1px solid rgba(255, 93, 93, 0.28);
+    color: #ffd2d2;
+}
+
+.auth-alert-success {
+    background: rgba(48, 214, 141, 0.14);
+    border: 1px solid rgba(48, 214, 141, 0.28);
+    color: #d3ffe9;
+}
+
+@media (max-width: 991.98px) {
+    .auth-shell {
+        grid-template-columns: 1fr;
+        padding: 1rem 0 2rem;
+    }
+
+    .hero-highlights,
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
