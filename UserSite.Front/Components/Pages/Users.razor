@@ -52,7 +52,7 @@
             </button>
         </div>
 
-        @if (isLoading)
+        @if (!isPageReady || isLoading)
         {
             <div class="users-empty-state">Carregando usuários...</div>
         }
@@ -95,11 +95,19 @@
 
 @code {
     private readonly List<UserDto> users = [];
+    private bool isPageReady;
     private bool isLoading;
     private string? errorMessage;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        await UserSessionService.RestoreAsync();
+
         if (!UserSessionService.IsAuthenticated)
         {
             Navigation.NavigateTo("/");
@@ -107,6 +115,8 @@
         }
 
         await LoadUsersAsync();
+        isPageReady = true;
+        StateHasChanged();
     }
 
     private async Task LoadUsersAsync()
@@ -136,9 +146,9 @@
         }
     }
 
-    private void Logout()
+    private async Task Logout()
     {
-        UserSessionService.Clear();
+        await UserSessionService.ClearAsync();
         Navigation.NavigateTo("/");
     }
 }
