@@ -1,6 +1,9 @@
 ﻿@page "/"
 @rendermode InteractiveServer
+@inject AuthApiClient AuthApiClient
 @inject UserApiClient UserApiClient
+@inject UserSessionService UserSessionService
+@inject NavigationManager Navigation
 
 <PageTitle>UserSite</PageTitle>
 
@@ -51,7 +54,7 @@
                 <div>
                     <span class="panel-kicker">Acesso</span>
                     <h2>Entrar na plataforma</h2>
-                    <p>O login visual já está pronto. A integração com o microsserviço de autenticação virá na próxima fase.</p>
+                    <p>Entre com sua conta para acessar a área protegida e visualizar todos os usuários cadastrados.</p>
                 </div>
 
                 <div class="form-group">
@@ -120,6 +123,14 @@
     private string? errorMessage;
     private string? successMessage;
 
+    protected override void OnInitialized()
+    {
+        if (UserSessionService.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/users");
+        }
+    }
+
     private void ShowLogin()
     {
         ClearMessages();
@@ -146,8 +157,19 @@
 
         try
         {
-            await Task.Delay(300);
-            successMessage = "A tela de login está pronta, mas a autenticação será ligada quando o AuthService for criado.";
+            var response = await AuthApiClient.LoginAsync(new LoginRequest
+            {
+                Email = loginEmail.Trim(),
+                Password = loginPassword
+            });
+
+            UserSessionService.SetSession(response.Token, loginEmail.Trim(), response.ExpiresAt);
+            Navigation.NavigateTo("/users");
+            return;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Não foi possível autenticar: {ex.Message}";
         }
         finally
         {
