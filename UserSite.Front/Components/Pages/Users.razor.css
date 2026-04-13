@@ -111,6 +111,7 @@
 
 .users-card {
     padding: 1.4rem;
+    color: #f8fbff;
 }
 
 .users-card-header {
@@ -157,6 +158,15 @@
 .users-table tbody td {
     background: rgba(8, 13, 28, 0.84);
     border-color: rgba(255, 255, 255, 0.05);
+    color: #f8fbff !important;
+}
+
+.users-table tbody td *,
+.users-card p,
+.users-card span,
+.users-empty-state,
+.users-alert {
+    color: inherit;
 }
 
 .users-status {
