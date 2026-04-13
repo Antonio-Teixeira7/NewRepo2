@@ -123,8 +123,15 @@
     private string? errorMessage;
     private string? successMessage;
 
-    protected override void OnInitialized()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        await UserSessionService.RestoreAsync();
+
         if (UserSessionService.IsAuthenticated)
         {
             Navigation.NavigateTo("/users");
@@ -163,7 +170,7 @@
                 Password = loginPassword
             });
 
-            UserSessionService.SetSession(response.AccessToken, response.UserId, response.Email, response.ExpiresAtUtc);
+            await UserSessionService.SetSessionAsync(response.AccessToken, response.UserId, response.Email, response.ExpiresAtUtc);
             Navigation.NavigateTo("/users");
             return;
         }
