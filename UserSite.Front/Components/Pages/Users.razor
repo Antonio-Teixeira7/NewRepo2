@@ -42,6 +42,11 @@
                     <input class="form-control" @bind="formModel.Email" />
                 </div>
 
+                <div class="mb-3">
+                    <label class="form-label">@(isEditMode ? "Nova senha (opcional)" : "Senha")</label>
+                    <input class="form-control" type="password" @bind="password" autocomplete="new-password" />
+                </div>
+
                 <div class="d-flex gap-2">
                     <button class="btn btn-primary" @onclick="SaveAsync" disabled="@isSaving">
                         @(isSaving ? "Salvando..." : isEditMode ? "Atualizar" : "Criar")
@@ -144,6 +149,7 @@
     private readonly List<UserDto> users = [];
     private UserDto formModel = new();
     private UserDto? searchedUser;
+    private string password = string.Empty;
     private string searchName = string.Empty;
     private string? errorMessage;
     private string? successMessage;
@@ -196,6 +202,12 @@
             return;
         }
 
+        if (!isEditMode && string.IsNullOrWhiteSpace(password))
+        {
+            errorMessage = "Senha é obrigatória na criação.";
+            return;
+        }
+
         isSaving = true;
 
         try
@@ -206,11 +218,21 @@
 
             if (isEditMode)
             {
-                await UserApiClient.UpdateAsync(formModel.Id, formModel);
+                await UserApiClient.UpdateAsync(formModel.Id, new UpdateUserRequest
+                {
+                    Name = formModel.Name,
+                    Email = formModel.Email,
+                    Password = string.IsNullOrWhiteSpace(password) ? null : password
+                });
             }
             else
             {
-                await UserApiClient.CreateAsync(formModel);
+                await UserApiClient.CreateAsync(new CreateUserRequest
+                {
+                    Name = formModel.Name,
+                    Email = formModel.Email,
+                    Password = password
+                });
             }
 
             ResetForm();
@@ -253,6 +275,7 @@
     {
         ClearMessages();
         isEditMode = true;
+        password = string.Empty;
         formModel = new UserDto
         {
             Id = user.Id,
@@ -294,6 +317,7 @@
     {
         isEditMode = false;
         formModel = new UserDto();
+        password = string.Empty;
     }
 
     private void ClearMessages()

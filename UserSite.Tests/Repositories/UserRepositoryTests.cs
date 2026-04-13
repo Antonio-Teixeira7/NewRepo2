@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using UserSite.Data;
-using UserSite.Data.Dtos;
 using UserSite.Data.Entities;
 using UserSite.Repositories;
 
@@ -23,8 +22,8 @@ public class UserRepositoryTests
 		// Arrange
 		await using var context = CreateContext();
 		context.Users.AddRange(
-			new User { Name = "Ativo", Email = "ativo@test.com", IsActive = true },
-			new User { Name = "Inativo", Email = "inativo@test.com", IsActive = false });
+			new User { Name = "Ativo", Email = "ativo@test.com", PasswordHash = "hash-1", IsActive = true },
+			new User { Name = "Inativo", Email = "inativo@test.com", PasswordHash = "hash-2", IsActive = false });
 		await context.SaveChangesAsync();
 		var repository = new UserRepository(context);
 
@@ -42,14 +41,15 @@ public class UserRepositoryTests
 	{
 		// Arrange
 		await using var context = CreateContext();
-		var user = new User { Name = "Nome Antigo", Email = "old@test.com", IsActive = true };
+		var user = new User { Name = "Nome Antigo", Email = "old@test.com", PasswordHash = "hash-antigo", IsActive = true };
 		context.Users.Add(user);
 		await context.SaveChangesAsync();
 		var repository = new UserRepository(context);
-		var dto = new UserDto { Name = "Nome Novo", Email = "new@test.com" };
+		user.Name = "Nome Novo";
+		user.Email = "new@test.com";
 
 		// Act
-		await repository.UpdateAsync(user.Id, dto);
+		await repository.UpdateAsync(user);
 		var updatedUser = await context.Users.FirstAsync(u => u.Id == user.Id);
 
 		// Assert
@@ -63,7 +63,7 @@ public class UserRepositoryTests
 	{
 		// Arrange
 		await using var context = CreateContext();
-		var user = new User { Name = "Usuario", Email = "user@test.com", IsActive = true };
+		var user = new User { Name = "Usuario", Email = "user@test.com", PasswordHash = "hash-user", IsActive = true };
 		context.Users.Add(user);
 		await context.SaveChangesAsync();
 		var repository = new UserRepository(context);
@@ -81,7 +81,7 @@ public class UserRepositoryTests
 	{
 		// Arrange
 		await using var context = CreateContext();
-		var user = new User { Name = "Usuario", Email = "user@test.com", IsActive = false };
+		var user = new User { Name = "Usuario", Email = "user@test.com", PasswordHash = "hash-user", IsActive = false };
 		context.Users.Add(user);
 		await context.SaveChangesAsync();
 		var repository = new UserRepository(context);

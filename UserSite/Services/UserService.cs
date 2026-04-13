@@ -13,9 +13,20 @@ public class UserService : IUserService
 		_repository = repository;
 	}
 
-	public async Task CreateAsync(UserDto dto)
+	public async Task CreateAsync(CreateUserDto dto)
 	{
-		User user = new() { Name = dto.Name, Email = dto.Email, IsActive = true };
+		if (string.IsNullOrWhiteSpace(dto.Password))
+		{
+			throw new ArgumentException("Password is required.", nameof(dto));
+		}
+
+		User user = new()
+		{
+			Name = dto.Name,
+			Email = dto.Email,
+			PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+			IsActive = true
+		};
 
 		await _repository.CreateAsync(user);
 	}
@@ -53,9 +64,23 @@ public class UserService : IUserService
 		return dto;
 	}
 
-	public async Task UpdateAsync(int id, UserDto dto)
+	public async Task UpdateAsync(int id, UpdateUserDto dto)
 	{
-		await _repository.UpdateAsync(id, dto);
+		var user = await _repository.GetByIdAsync(id);
+		if (user is null)
+		{
+			return;
+		}
+
+		user.Name = dto.Name;
+		user.Email = dto.Email;
+
+		if (!string.IsNullOrWhiteSpace(dto.Password))
+		{
+			user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+		}
+
+		await _repository.UpdateAsync(user);
 	}
 
 	public async Task DeactivateAsync(int id)

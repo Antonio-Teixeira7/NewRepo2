@@ -38,7 +38,7 @@ public class UserControllerTests
 		// Arrange
 		var serviceMock = new Mock<IUserService>();
 		var controller = new UserController(serviceMock.Object);
-		var dto = new UserDto { Name = "Antonio", Email = "antonio@test.com" };
+		var dto = new CreateUserDto { Name = "Antonio", Email = "antonio@test.com", Password = "123456" };
 
 		// Act
 		await controller.CreateAsync(dto);

@@ -16,7 +16,7 @@ public class UserController : ControllerBase
 	}
 
 	[HttpPost]
-	public async Task CreateAsync([FromBody] UserDto dto)
+	public async Task CreateAsync([FromBody] CreateUserDto dto)
 	{
 		await _userService.CreateAsync(dto);
 	}
@@ -34,7 +34,7 @@ public class UserController : ControllerBase
 	}
 
 	[HttpPut]
-	public async Task UpdateAsync([FromQuery] int id, [FromBody] UserDto dto)
+	public async Task UpdateAsync([FromQuery] int id, [FromBody] UpdateUserDto dto)
 	{
 		await _userService.UpdateAsync(id, dto);
 	}

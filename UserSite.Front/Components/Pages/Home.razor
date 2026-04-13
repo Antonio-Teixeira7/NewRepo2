@@ -1,11 +1,211 @@
 ﻿@page "/"
-@inject NavigationManager Navigation
+@rendermode InteractiveServer
+@inject UserApiClient UserApiClient
 
-<PageTitle>Home</PageTitle>
+<PageTitle>UserSite</PageTitle>
+
+<section class="auth-shell">
+    <div class="auth-hero">
+        <span class="hero-badge">UserSite</span>
+        <h1>Seu espaço começa com uma conta segura.</h1>
+        <p>
+            Crie sua conta agora ou prepare seu acesso para o fluxo de autenticação
+            que será integrado ao futuro <strong>AuthService</strong>.
+        </p>
+
+        <div class="hero-highlights">
+            <div class="hero-highlight-card">
+                <span>Cadastro seguro</span>
+                <strong>Senha protegida com hash no backend</strong>
+            </div>
+            <div class="hero-highlight-card">
+                <span>Estrutura pronta</span>
+                <strong>Front preparado para evolução da autenticação</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-card">
+        <div class="auth-switcher">
+            <button class="@(isLoginMode ? "active" : null)" @onclick="ShowLogin">
+                Entrar
+            </button>
+            <button class="@(!isLoginMode ? "active" : null)" @onclick="ShowRegister">
+                Criar conta
+            </button>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(errorMessage))
+        {
+            <div class="auth-alert auth-alert-error">@errorMessage</div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(successMessage))
+        {
+            <div class="auth-alert auth-alert-success">@successMessage</div>
+        }
+
+        @if (isLoginMode)
+        {
+            <div class="auth-panel">
+                <div>
+                    <span class="panel-kicker">Acesso</span>
+                    <h2>Entrar na plataforma</h2>
+                    <p>O login visual já está pronto. A integração com o microsserviço de autenticação virá na próxima fase.</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input class="form-control auth-input" type="email" @bind="loginEmail" placeholder="voce@empresa.com" />
+                </div>
+
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input class="form-control auth-input" type="password" @bind="loginPassword" placeholder="Digite sua senha" autocomplete="current-password" />
+                </div>
+
+                <button class="btn auth-submit" @onclick="LoginAsync" disabled="@isSubmitting">
+                    @(isSubmitting ? "Processando..." : "Entrar")
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="auth-panel">
+                <div>
+                    <span class="panel-kicker">Cadastro</span>
+                    <h2>Criar sua conta</h2>
+                    <p>Seu cadastro envia <strong>nome</strong>, <strong>email</strong> e <strong>senha</strong> para o backend atualizado.</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Nome</label>
+                    <input class="form-control auth-input" @bind="registerName" placeholder="Seu nome" />
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input class="form-control auth-input" type="email" @bind="registerEmail" placeholder="voce@empresa.com" />
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Senha</label>
+                        <input class="form-control auth-input" type="password" @bind="registerPassword" placeholder="Crie uma senha" autocomplete="new-password" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Confirmar senha</label>
+                        <input class="form-control auth-input" type="password" @bind="confirmPassword" placeholder="Repita a senha" autocomplete="new-password" />
+                    </div>
+                </div>
+
+                <button class="btn auth-submit" @onclick="CreateAccountAsync" disabled="@isSubmitting">
+                    @(isSubmitting ? "Criando conta..." : "Criar conta")
+                </button>
+            </div>
+        }
+    </div>
+</section>
 
 @code {
-    protected override void OnInitialized()
+    private bool isLoginMode = true;
+    private bool isSubmitting;
+    private string loginEmail = string.Empty;
+    private string loginPassword = string.Empty;
+    private string registerName = string.Empty;
+    private string registerEmail = string.Empty;
+    private string registerPassword = string.Empty;
+    private string confirmPassword = string.Empty;
+    private string? errorMessage;
+    private string? successMessage;
+
+    private void ShowLogin()
     {
-        Navigation.NavigateTo("/users");
+        ClearMessages();
+        isLoginMode = true;
+    }
+
+    private void ShowRegister()
+    {
+        ClearMessages();
+        isLoginMode = false;
+    }
+
+    private async Task LoginAsync()
+    {
+        ClearMessages();
+
+        if (string.IsNullOrWhiteSpace(loginEmail) || string.IsNullOrWhiteSpace(loginPassword))
+        {
+            errorMessage = "Informe email e senha para continuar.";
+            return;
+        }
+
+        isSubmitting = true;
+
+        try
+        {
+            await Task.Delay(300);
+            successMessage = "A tela de login está pronta, mas a autenticação será ligada quando o AuthService for criado.";
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private async Task CreateAccountAsync()
+    {
+        ClearMessages();
+
+        if (string.IsNullOrWhiteSpace(registerName) ||
+            string.IsNullOrWhiteSpace(registerEmail) ||
+            string.IsNullOrWhiteSpace(registerPassword))
+        {
+            errorMessage = "Nome, email e senha são obrigatórios.";
+            return;
+        }
+
+        if (registerPassword != confirmPassword)
+        {
+            errorMessage = "A confirmação de senha não confere.";
+            return;
+        }
+
+        isSubmitting = true;
+
+        try
+        {
+            await UserApiClient.CreateAsync(new CreateUserRequest
+            {
+                Name = registerName.Trim(),
+                Email = registerEmail.Trim(),
+                Password = registerPassword
+            });
+
+            loginEmail = registerEmail.Trim();
+            loginPassword = string.Empty;
+            registerName = string.Empty;
+            registerEmail = string.Empty;
+            registerPassword = string.Empty;
+            confirmPassword = string.Empty;
+            isLoginMode = true;
+            successMessage = "Conta criada com sucesso. O próximo passo será conectar esta tela ao AuthService para realizar o login real.";
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Não foi possível criar a conta: {ex.Message}";
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private void ClearMessages()
+    {
+        errorMessage = null;
+        successMessage = null;
     }
 }

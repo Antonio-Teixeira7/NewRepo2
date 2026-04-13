@@ -1,7 +1,6 @@
 ﻿using UserSite.Data;
 using UserSite.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using UserSite.Data.Dtos;
 
 namespace UserSite.Repositories;
 
@@ -35,16 +34,13 @@ public class UserRepository : IUserRepository
 			.FirstOrDefaultAsync(u => u.Name == name);
 	}
 
-	public async Task UpdateAsync(int id, UserDto dto)
+	public async Task<User?> GetByIdAsync(int id)
 	{
-		var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
-		if (user is null)
-		{
-			return;
-		}
+		return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+	}
 
-		user.Name = dto.Name;
-		user.Email = dto.Email;
+	public async Task UpdateAsync(User user)
+	{
 		await _context.SaveChangesAsync();
 	}
 
