@@ -8,6 +8,7 @@ namespace UserSite.Repositories
 		Task CreateAsync(User user);
 		Task DeactivateAsync(int id);
 		Task<List<User>> GetAllAsync();
+		Task<User?> GetByEmailAsync(string email);
 		Task<User?> GetByIdAsync(int id);
 		Task<User?> GetByNameAsync(string name);
 		Task UpdateAsync(User user);

@@ -83,6 +83,33 @@ public class UserService : IUserService
 		await _repository.UpdateAsync(user);
 	}
 
+	public async Task<ValidateCredentialsResponseDto?> ValidateCredentialsAsync(ValidateCredentialsRequestDto dto)
+	{
+		var user = await _repository.GetByEmailAsync(dto.Email);
+		if (user is null || !user.IsActive)
+		{
+			return null;
+		}
+
+		if (string.IsNullOrWhiteSpace(user.PasswordHash))
+		{
+			return null;
+		}
+
+		var isPasswordValid = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
+		if (!isPasswordValid)
+		{
+			return null;
+		}
+
+		return new ValidateCredentialsResponseDto
+		{
+			Id = user.Id,
+			Email = user.Email,
+			IsActive = user.IsActive
+		};
+	}
+
 	public async Task DeactivateAsync(int id)
 	{
 		await _repository.DeactivateAsync(id);

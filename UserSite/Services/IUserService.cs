@@ -10,5 +10,6 @@ namespace UserSite.Services
 		Task<List<UserDto>> GetAllAsync();
 		Task<UserDto> GetByNameAsync(string name);
 		Task UpdateAsync(int id, UpdateUserDto dto);
+		Task<ValidateCredentialsResponseDto?> ValidateCredentialsAsync(ValidateCredentialsRequestDto dto);
 	}
 }
