@@ -106,8 +106,6 @@
             return;
         }
 
-        await UserSessionService.RestoreAsync();
-
         if (!UserSessionService.IsAuthenticated)
         {
             Navigation.NavigateTo("/");
@@ -148,7 +146,7 @@
 
     private async Task Logout()
     {
-        await UserSessionService.ClearAsync();
+        UserSessionService.Clear();
         Navigation.NavigateTo("/");
     }
 }
