@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using UserSite.Data.Dtos;
 using UserSite.Services;
 
 namespace UserSite.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class UserController : ControllerBase
@@ -16,6 +18,7 @@ public class UserController : ControllerBase
 	}
 
 	[HttpPost]
+	[AllowAnonymous]
 	public async Task CreateAsync([FromBody] CreateUserDto dto)
 	{
 		await _userService.CreateAsync(dto);

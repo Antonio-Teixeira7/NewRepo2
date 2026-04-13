@@ -161,4 +161,62 @@ public class UserServiceTests
 		Assert.True(BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash));
 		_repositoryMock.Verify(r => r.UpdateAsync(user), Times.Once);
 	}
+
+	[Fact]
+	public async Task ValidateCredentialsAsync_CredenciaisValidas_DeveRetornarUsuarioSeguro()
+	{
+		// Arrange
+		const string password = "senha-segura";
+		var dto = new ValidateCredentialsRequestDto
+		{
+			Email = "auth@test.com",
+			Password = password
+		};
+		var user = new User
+		{
+			Id = 7,
+			Name = "Auth",
+			Email = dto.Email,
+			PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
+			IsActive = true
+		};
+
+		_repositoryMock.Setup(r => r.GetByEmailAsync(dto.Email)).ReturnsAsync(user);
+
+		// Act
+		var result = await _service.ValidateCredentialsAsync(dto);
+
+		// Assert
+		Assert.NotNull(result);
+		Assert.Equal(user.Id, result!.Id);
+		Assert.Equal(user.Email, result.Email);
+		Assert.True(result.IsActive);
+	}
+
+	[Fact]
+	public async Task ValidateCredentialsAsync_SenhaInvalida_DeveRetornarNulo()
+	{
+		// Arrange
+		var dto = new ValidateCredentialsRequestDto
+		{
+			Email = "auth@test.com",
+			Password = "senha-errada"
+		};
+		var user = new User
+		{
+			Id = 8,
+			Name = "Auth",
+			Email = dto.Email,
+			PasswordHash = BCrypt.Net.BCrypt.HashPassword("senha-correta"),
+			IsActive = true
+		};
+
+		_repositoryMock.Setup(r => r.GetByEmailAsync(dto.Email)).ReturnsAsync(user);
+
+		// Act
+		var result = await _service.ValidateCredentialsAsync(dto);
+
+		// Assert
+		Assert.Null(result);
+	}
 }
